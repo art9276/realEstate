@@ -2,9 +2,9 @@ package db
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/spf13/viper"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	logg "realEstate/pkg/log"
 )
 
@@ -12,22 +12,22 @@ var gor *gorm.DB //база данных
 
 func InitGorm() {
 	GormConfig()
-	driver := viper.Get("database.driver")
 	host := viper.Get("database.host")
 	port := viper.Get("database.port")
-	user := viper.Get("database.user")
+	usergorm := viper.Get("database.user")
 	password := viper.Get("database.password")
 	dbname := viper.Get("database.dbname")
-	gormconn := fmt.Sprintf("%v://%v:%s@%v:%v/%v?sslmode=disable",
-		driver, user, password, host, port, dbname)
-	logg.Info(gormconn)
-	con, err := gorm.Open("postgres", gormconn)
+	dsn :=fmt.Sprintf( "host=%v user=%v password=%v dbname=%v port=%v sslmode=disable",
+		host,usergorm, password,dbname,port)
+	logg.Info(dsn)
+	con, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logg.Warning("Database is not initialize")
 	}
 	logg.Info("Database is connected with GORM")
-	gor = con
-	//gor.Debug().AutoMigrate(&modelsOfEntty.User{}) //Миграция базы данных
+	//TODO сделать дефер закрытие соединения
+	println(con)
+
 }
 
 func GormConfig() {
@@ -42,3 +42,5 @@ func GormConfig() {
 func GetGormDB() *gorm.DB {
 	return gor
 }
+
+

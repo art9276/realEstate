@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	_ "github.com/swaggo/swag/example/celler/httputil"
 	_ "github.com/swaggo/swag/example/celler/model"
@@ -12,7 +10,7 @@ import (
 	logg "realEstate/pkg/log"
 )
 
-func init() {
+func main() {
 	logg.GetLogger()
 	//db.InitDB()
 	db.InitGorm()
@@ -20,15 +18,6 @@ func init() {
 	viper.New()
 	conf.LoadConfig()
 	routes.StartGin()
-}
-
-func main() {
-	port := viper.Get("server.port")
-	fmt.Println(port)
-	logg.WithFields(logrus.Fields{
-		"animal": "walrus",
-		"number": 8,
-	})
-	logg.Info("232")
-	defer db.GetGormDB().Close()
+	//db.InitRedis()
+	logg.Info("Server is running on port:8080")
 }

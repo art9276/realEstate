@@ -4,13 +4,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"realEstate/internal/db"
 	m "realEstate/pkg/json"
-
 	"time"
 )
 
 // User represents a user.
 type User struct {
-	ID           int       `gorm:"column:Id_user" json:"Id_user"`
+	ID           int       `gorm:"primaryKey" json:"Id"`
 	Name         string    `gorm:"column:Name" json:"Name"`
 	LastName     string    `gorm:"column:Surename" json:"Surename"`
 	DateCreation time.Time `gorm:"column:Date_creation" json:"Date_creation"`

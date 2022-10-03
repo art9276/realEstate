@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/gin-gonic/gin v1.8.1
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/lib/pq v1.10.7
 	github.com/sirupsen/logrus v1.9.0
@@ -14,4 +15,6 @@ require (
 	github.com/swaggo/swag v1.8.6
 	github.com/swaggo/swag/example/celler v0.0.0-20220927163909-075c176b6d2c
 	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
+	gorm.io/driver/postgres v1.3.10 // indirect
+	gorm.io/gorm v1.23.10 // indirect
 )
