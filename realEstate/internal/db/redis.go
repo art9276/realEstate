@@ -9,6 +9,7 @@ import (
 
 var ctx = context.Background()
 
+// initialize redis db
 func InitRedis() {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "127.0.0.1:6379",

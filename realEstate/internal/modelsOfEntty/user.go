@@ -1,41 +1,40 @@
 package modelsOfEntty
 
 import (
-	"golang.org/x/crypto/bcrypt"
-	"realEstate/internal/db"
-	m "realEstate/pkg/json"
+	"gorm.io/gorm"
 	"time"
 )
 
 // User represents a user.
-type User struct {
+type Userm struct {
+	gorm.Model	`json:"model"`
 	ID           int       `gorm:"primaryKey" json:"Id"`
 	Name         string    `gorm:"column:Name" json:"Name"`
 	LastName     string    `gorm:"column:Surename" json:"Surename"`
-	DateCreation time.Time `gorm:"column:Date_creation" json:"Date_creation"`
-	DateUpdate   time.Time `gorm:"column:Date_update" json:"Date_update"`
+	Date_Creation time.Time `gorm:"column:Date_creation" json:"Date_creation"`
+	Date_Update   time.Time `gorm:"column:Date_update" json:"Date_update"`
 	Login        string    `gorm:"column:Login" json:"Login"`
 	Password     string    `gorm:"column:" json:"Enc_password"`
 	Telephone    string    `gorm:"column:Telephone" json:"Telephone"`
 	Email        string    `gorm:"column:Email" json:"Email"`
 }
 
-var hashedPassword string
+type Users []Userm
 
-// GetID returns the user ID.
+func (u *Userm) NotFound() bool {
+	return u.Model.ID == 0
+}
 
-func (u *User) User() string {
+func (u Userm) TableName() string {
+	// custom table name, this is default
 	return "Users"
 }
 
-func (u *User) CreateUser() error {
-	return db.GetGormDB().Create(u).Error
-}
-
-func Login(email, password string) map[string]interface{} {
+// login unaforized users
+/*func Login(email, password string) map[string]interface{} {
 
 	user := &User{}
-	err := db.GetGormDB().Table("users").Where("email = ?", email).First(user).Error
+	err := db.ConnectGormDB().Table("users").Where("email = ?", email).First(user).Error
 	if err != nil {
 		return m.Message(false, "Connection error. Please retry")
 	}
@@ -51,14 +50,6 @@ func Login(email, password string) map[string]interface{} {
 	return resp
 }
 
-func GetUser(u uint) *User {
+ */
 
-	us := &User{}
-	db.GetGormDB().Table("accounts").Where("id = ?", u).First(us)
-	if us.Email == "" { //User not found!
-		return nil
-	}
 
-	us.Password = hashedPassword
-	return us
-}

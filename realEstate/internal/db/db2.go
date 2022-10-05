@@ -8,9 +8,9 @@ import (
 	logg "realEstate/pkg/log"
 )
 
-var gor *gorm.DB //база данных
 
-func InitGorm() {
+//func initialize connections to postgres and gorm
+func InitGorm() *gorm.DB {
 	GormConfig()
 	host := viper.Get("database.host")
 	port := viper.Get("database.port")
@@ -20,16 +20,17 @@ func InitGorm() {
 	dsn :=fmt.Sprintf( "host=%v user=%v password=%v dbname=%v port=%v sslmode=disable",
 		host,usergorm, password,dbname,port)
 	logg.Info(dsn)
-	con, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logg.Warning("Database is not initialize")
 	}
+
 	logg.Info("Database is connected with GORM")
 	//TODO сделать дефер закрытие соединения
-	println(con)
+	return db
 
 }
-
+// func load gorm config from file
 func GormConfig() {
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
@@ -39,8 +40,7 @@ func GormConfig() {
 		logg.Error("Logs not read")
 	}
 }
-func GetGormDB() *gorm.DB {
-	return gor
-}
+//func get exemplar gorm db
+
 
 

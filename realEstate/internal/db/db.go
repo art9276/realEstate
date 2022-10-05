@@ -9,7 +9,7 @@ import (
 )
 
 var db *sql.DB
-
+// func init db postgres
 func InitDB() {
 	LoaddbConfig()
 	driver := viper.Get("database.driver")
@@ -21,9 +21,6 @@ func InitDB() {
 	// connection string
 	psqlconn := fmt.Sprintf("%v://%v:%s@%v:%v/%v?sslmode=disable",
 		driver, user, password, host, port, dbname)
-	//connStr := fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=disable",
-	//	postgres,user,password,host,port,dbname)
-	// open database
 	fmt.Println(psqlconn)
 	db, err := sql.Open("postgres", psqlconn)
 	if err != nil {
@@ -35,6 +32,7 @@ func InitDB() {
 	fmt.Println("The database is connected")
 }
 
+// func load db config from file
 func LoaddbConfig() {
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
