@@ -5,12 +5,10 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
-
 )
 
-var db *sql.DB
 // func init db postgres
-func InitDB() {
+func InitDB() *sql.DB {
 	LoaddbConfig()
 	driver := viper.Get("database.driver")
 	host := viper.Get("database.host")
@@ -30,6 +28,9 @@ func InitDB() {
 		fmt.Println("The database is not connected")
 	}
 	fmt.Println("The database is connected")
+	//defer db.Close()
+	return db
+
 }
 
 // func load db config from file

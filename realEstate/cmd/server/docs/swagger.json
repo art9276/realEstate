@@ -1,7 +1,17 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Service to byu and sell houses and flats  Gin framework.",
+        "title": "Real Estate Service",
+        "contact": {
+            "name": "Alexander",
+            "email": "sntshkmr60@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0"
+        },
+        "version": "1.0"
     },
+    "host": "localhost:8080",
     "paths": {}
 }

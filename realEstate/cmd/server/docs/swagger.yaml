@@ -1,4 +1,12 @@
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: sntshkmr60@gmail.com
+    name: Alexander
+  description: Service to byu and sell houses and flats  Gin framework.
+  license:
+    name: Apache 2.0
+  title: Real Estate Service
+  version: "1.0"
 paths: {}
 swagger: "2.0"
