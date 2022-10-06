@@ -36,7 +36,7 @@ CREATE TABLE public."Users"
     "Id_user" integer NOT NULL DEFAULT nextval('"Users_Id_user_seq"'::regclass),
     "Name" character varying(20) COLLATE pg_catalog."default" NOT NULL,
     "Surename" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Date_creation" date NOT NULL,
+    "Date_creation" date NOT NULL DEFAULT CURRENT_DATE,
     "Date_update" date,
     "Login" character varying(20) COLLATE pg_catalog."default" NOT NULL,
     "Enc_password" character varying(20) COLLATE pg_catalog."default" NOT NULL,

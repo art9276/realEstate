@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
@@ -41,9 +42,9 @@ func Login(c *gin.Context) {
 // @Failure 404 {object} web.APIError "Can not find ID"
 // @Router /users [get]
 func GetAllUser(c *gin.Context) {
-
-	rows, err := db.InitDB().Query(`SELECT "Id_user", "Name", "Surename", "Date_creation", 
-       "Login", "Enc_password", "Telephone", "Email" FROM public."Users"`)
+// если добавлять поле date_creation,date_update
+	rows, err := db.InitDB().Query(`SELECT "Name", "Surename", 
+       "Login", "Enc_password", "Telephone", "Email" ,"Date_creation" FROM public."Users"`)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Query not Scanned",
@@ -53,8 +54,8 @@ func GetAllUser(c *gin.Context) {
 	var users []models.User
 	for rows.Next() {
 		var user models.User
-		err2 := rows.Scan(&user.Id_user, &user.Name, &user.Surename, &user.Date_creation,
-			&user.Login, &user.Enc_password, &user.Telephone, &user.Email)
+		err2 := rows.Scan( &user.Name, &user.Surename,
+			&user.Login, &user.Enc_password, &user.Telephone, &user.Email,&user.Date_creation)
 		// Exit if we get an error
 		if err2 != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -82,11 +83,29 @@ func GetAllUser(c *gin.Context) {
 // @Failure 404 {object} web.APIError "Can not find ID"
 // @Router /auth/register [post]
 func CreateUser(c *gin.Context) {
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "123",
-	})
-	return
+	u := new(models.User)
+	if err := c.BindJSON(u); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "JSON non scanned",
+		})
+	}
+		sqlStatement := `INSERT INTO public."Users"(
+			"Name", "Surename", "Login", 
+			"Enc_password", "Telephone", "Email","Date_creation")
+			VALUES ($1, $2, $3, $4, $5, $6,$7) `
+	res, err := db.InitDB().Query(sqlStatement, u.Name,
+			u.Surename, u.Login,
+			u.Enc_password,u.Telephone,u.Email,u.Date_creation)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to saved user",
+		})
+	} else {
+		fmt.Println(res)
+		c.JSON(http.StatusCreated, gin.H{
+			"User created": u,
+		})
+	}
 }
 
 // GetUsers godoc
@@ -124,11 +143,30 @@ func GetUser(c *gin.Context) {
 // @Router /users/:id [put]
 func UpdateUser(c *gin.Context) {
 	//id := c.Param("id")
+	u := new(models.User)
+	if err := c.BindJSON(u); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "JSON non scanned",
+		})
+	}
+	sqlStatement := `UPDATE public."Users" SET
+			"Name"=$1, "Surename"=$2, "Login"=$3, 
+			"Enc_password"=$4, "Telephone"=$5, "Email"=$6,"Date_creation"=$7
+			Where "Email"=$8`
+	res, err := db.InitDB().Query(sqlStatement, u.Name,
+		u.Surename, u.Login,
+		u.Enc_password, u.Telephone, u.Email, u.Date_creation,u.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to updated user",
+		})
+	} else {
+		fmt.Println(res)
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "user updated",
-	})
-	return
+		c.JSON(http.StatusOK, gin.H{
+			"User updated": u,
+		})
+	}
 }
 
 // // DeleteUsers godoc
@@ -142,14 +180,20 @@ func UpdateUser(c *gin.Context) {
 // @Success 200 {string} string "Welcome to site"
 // @Failure 400 {object} web.APIError "We need ID!!"
 // @Failure 404 {object} web.APIError "Can not find ID"
-// @Router /users/:id [delete]
+// @Router /users [delete]
 func DeleteUser(c *gin.Context) {
-	//id := c.Param("id")
+	Email := c.Query("Email")
+	sqlStatement := `Delete from public."Users" where "Email"=$1`
+	res, err := db.InitDB().Query(sqlStatement, Email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "User not found",
+		})
+	} else {
+		fmt.Println(res)
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "user deleted",
-	})
-	return
+		c.JSON(http.StatusOK,"User deleted")
+	}
 }
 
 // ShowIndex godoc
