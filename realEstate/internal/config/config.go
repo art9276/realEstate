@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/viper"
 	logg "realEstate/pkg/log"
 )
+
 // load viper config
 func LoadConfig() {
 	viper.AddConfigPath("./config")

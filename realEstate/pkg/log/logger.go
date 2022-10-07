@@ -27,6 +27,7 @@ func GetLogger() {
 	logrusLog.Info("Logger get started")
 }
 
+
 func WithFields(fields logrus.Fields) {
 	logrus.WithFields(fields)
 }
@@ -57,6 +58,4 @@ func Warning(args ...interface{}) {
 	logrus.Warning()
 }
 
-func SetOutput(output io.Writer) {
-	logrus.SetOutput(output)
-}
+
